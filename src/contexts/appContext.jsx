@@ -87,13 +87,6 @@ export const AppProvider = ({ children }) => {
       getReadOnlyProvider()
     );
 
-    contract
-      .nextTokenId()
-      .then((id) => setNextTokenId(id))
-      .catch((error) => {
-        console.log(error);
-      });
-
     const handleMintedNFT = (receiver, nftTokenId) => {
       console.log(`NFT ${nftTokenId} has been minted to ${receiver}`);
 
@@ -159,10 +152,9 @@ export const AppProvider = ({ children }) => {
         recipientAddress,
         tokenId
       );
-      await tx.wait(); // Wait for confirmation
+      await tx.wait(); 
       console.log(`NFT ${tokenId} transferred to ${recipientAddress}`);
 
-      // Refresh user NFTs after transfer
       fetchUserNFTs();
     } catch (error) {
       console.error("Error transferring NFT:", error);
@@ -171,15 +163,7 @@ export const AppProvider = ({ children }) => {
 
   return (
     <appContext.Provider
-      value={{
-        nextTokenId,
-        maxSupply,
-        baseTokenURI,
-        tokenMetaData,
-        mintPrice,
-        userNFTs,
-        transferNFT,
-      }}
+      value={{ nextTokenId, maxSupply, baseTokenURI, tokenMetaData, mintPrice, userNFTs, transferNFT, }}
     >
       {children}
     </appContext.Provider>
