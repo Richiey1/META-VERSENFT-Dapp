@@ -1,93 +1,73 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { Dialog, Flex } from "@radix-ui/themes";
+import { Icon } from "@iconify/react";
+import { Dialog, Flex, Text } from "@radix-ui/themes";
 import React, { useState } from "react";
 import { useConnectors } from "wagmi";
 
 const WalletModal = () => {
-    const connectors = useConnectors();
+  const connectors = useConnectors();
+  const [pendingConnectorUID, setPendingConnectorUID] = useState(null);
+  const [error, setError] = useState("");
 
-    const [pendingConnectorUID, setPendingConnectorUID] = useState(null);
+  const connectWallet = async (connector) => {
+    try {
+      setError("");
+      setPendingConnectorUID(connector.id);
+      await connector.connect();
+    } catch (err) {
+      console.error("Connection error:", err);
+      setError("Failed to connect. Please try again.");
+    } finally {
+      setPendingConnectorUID(null);
+    }
+  };
 
-    const walletConnectConnector = connectors.find(
-        (connector) => connector.id === "walletConnect"
-    );
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>
+        <button className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md transition-all hover:scale-105 hover:from-blue-600 hover:to-purple-800">
+          <Icon icon="mdi:wallet" className="w-5 h-5" />
+          Connect Wallet
+        </button>
+      </Dialog.Trigger>
 
-    const otherConnectors = connectors.filter(
-        (connector) => connector.id !== "walletConnect"
-    );
+      <Dialog.Content maxWidth="480px" className="bg-secondary p-6 rounded-xl shadow-lg">
+        <Dialog.Title className="text-primary text-xl font-bold text-center mb-4">
+          Choose a Wallet
+        </Dialog.Title>
 
-    const connectWallet = async (connector) => {
-        try {
-            setPendingConnectorUID(connector.id);
-            await connector.connect();
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setPendingConnectorUID(null);
-        }
-    };
+        {error && (
+          <div className="flex items-center gap-2 p-3 text-red-600 bg-red-100 rounded-md text-sm">
+            <Icon icon="mdi:alert-circle" className="w-5 h-5" />
+            {error}
+          </div>
+        )}
 
-    return (
-        <Dialog.Root>
-            <Dialog.Trigger>
-                <button className="bg-secondary text-primary px-4 py-2 rounded-md cursor-pointer">
-                    Connect Wallet
-                </button>
-            </Dialog.Trigger>
+        <Flex direction="column" gap="4">
+          {connectors.map((connector) => (
+            <button
+              key={connector.id}
+              onClick={() => connectWallet(connector)}
+              disabled={pendingConnectorUID === connector.id}
+              className={`flex items-center justify-between w-full p-4 rounded-lg border border-primary text-primary bg-gradient-to-b from-primary/10 to-primary/5 hover:bg-primary/20 transition-all ${
+                pendingConnectorUID === connector.id ? "opacity-50 cursor-not-allowed" : "hover:scale-105"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <img src={connector.icon} alt={`${connector.name} logo`} className="w-8 h-8 rounded-md" />
+                <Text className="font-medium">{connector.name}</Text>
+              </div>
 
-            <Dialog.Content maxWidth="450px">
-                <Dialog.Title className="text-primary">
-                    Available Wallets
-                </Dialog.Title>
-
-                <Flex direction="column" gap="3">
-                    {walletConnectConnector && (
-                        <button
-                            onClick={() =>
-                                connectWallet(walletConnectConnector)
-                            }
-                            disabled={
-                                pendingConnectorUID ===
-                                walletConnectConnector.uid
-                            }
-                            className="w-full flex gap-4 items-center p-4 bg-primary/85 text-secondary rounded-md"
-                        >
-                            <img
-                                src="https://logosarchive.com/wp-content/uploads/2022/02/WalletConnect-icon.svg"
-                                className="w-6 h-6"
-                            />
-                            <span className="ml-2">WalletConnect</span>
-
-                            {pendingConnectorUID ===
-                                walletConnectConnector.uid && (
-                                <Icon icon="codex:loader" className="w-4 h-4" />
-                            )}
-                        </button>
-                    )}
-                    <div className="flex flex-col gap-4">
-                        {otherConnectors.map((connector) => (
-                            <button
-                                key={connector.id}
-                                onClick={() => connectWallet(connector)}
-                                disabled={pendingConnectorUID === connector.uid}
-                                className="w-full flex gap-4 items-center p-4 bg-primary/85 text-secondary rounded-md"
-                            >
-                                <img src={connector.icon} className="w-6 h-6" />
-                                <span className="ml-2">{connector.name}</span>
-
-                                {pendingConnectorUID === connector.uid && (
-                                    <Icon
-                                        icon="codex:loader"
-                                        className="w-4 h-4"
-                                    />
-                                )}
-                            </button>
-                        ))}
-                    </div>
-                </Flex>
-            </Dialog.Content>
-        </Dialog.Root>
-    );
+              {pendingConnectorUID === connector.id ? (
+                <Icon icon="eos-icons:loading" className="w-5 h-5 animate-spin text-primary" />
+              ) : (
+                <Icon icon="mdi:chevron-right" className="w-5 h-5 text-primary" />
+              )}
+            </button>
+          ))}
+        </Flex>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
 };
 
 export default WalletModal;

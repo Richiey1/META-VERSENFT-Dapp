@@ -5,9 +5,11 @@ import { shortenAddress } from "../../utils";
 import { Flex, Popover } from "@radix-ui/themes";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { supportedNetworks } from "../../config/wallet-connection/wagmi";
+import { useNavigate } from "react-router-dom";
 
 const WalletConnection = () => {
     const account = useAccount();
+    const navigate = useNavigate()
     const { disconnect } = useDisconnect();
 
     if (!account.address) {
@@ -43,6 +45,16 @@ const WalletConnection = () => {
                 <button className="w-full flex gap-4 items-center p-4 text-primary rounded-md">
                     <Icon icon="solar:copy-line-duotone" className="w-6 h-6" />
                     <span>Copy</span>
+                </button>
+                <button
+                    onClick={() => navigate("/account")}
+                    className="w-full flex gap-4 items-center p-4 text-primary rounded-md"
+                >
+                    <Icon
+                        icon="grommet-icons:user-settings"
+                        className="w-6 h-6"
+                    />
+                    <span>Account</span>
                 </button>
                 <button
                     onClick={disconnect}

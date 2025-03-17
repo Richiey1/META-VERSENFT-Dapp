@@ -1,4 +1,4 @@
-import { JsonRpcProvider } from "ethers";
+import { JsonRpcProvider, BrowserProvider } from "ethers";
 import { supportedNetworks } from "../config/wallet-connection/wagmi";
 
 export const shortenAddress = (address, length = 4) => {

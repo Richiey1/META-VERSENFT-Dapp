@@ -3,28 +3,27 @@ import React from "react";
 import WalletConnection from "./WalletConnection";
 
 const Header = () => {
-    return (
-        <Flex
-            gap="3"
-            as="header"
-            width="100%"
-            align="center"
-            justify="between"
-            className="bg-primary p-4 items-center h-18"
+  return (
+    <Flex
+      as="header"
+      width="100%"
+      align="center"
+      justify="between"
+      className="bg-primary p-5 h-20 shadow-md"
+    >
+      <Box>
+        <Text
+          as="span"
+          role="img"
+          aria-label="logo"
+          className="text-secondary font-extrabold text-3xl tracking-wide"
         >
-            <Box>
-                <Text
-                    className="text-secondary font-bold text-2xl"
-                    as="span"
-                    role="img"
-                    aria-label="logo"
-                >
-                    NFT dApp 🚀
-                </Text>
-            </Box>
-            <WalletConnection />
-        </Flex>
-    );
+          MetaVerse Artifacts
+        </Text>
+      </Box>
+      <WalletConnection />
+    </Flex>
+  );
 };
 
 export default Header;

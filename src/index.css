@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #386344;
-    --color-secondary: #fff;
-    --color-tertiary: #99bc9f;
+    --color-primary: #1e293b;  /* Dark Blue-Gray (Modern, Sleek) */
+    --color-secondary: #f8fafc;  /* Soft White (Better Contrast) */
+    --color-tertiary: #64748b;  /* Cool Gray (Smooth Blending) */
+    --color-accent: #4f46e5;  /* Indigo for Highlights */
+    --color-danger: #dc2626;  /* Red for Warnings */
+    --color-success: #16a34a;  /* Green for Success */
 }
